@@ -3,6 +3,7 @@ const userModel = require('../models/user.model')
 const { registerUserSchema, loginUserSchema } = require('../zodSchemas/registerUser.schema');
 const bcrpt = require('bcrypt');
 const jwt= require('jsonwebtoken');
+const tokenBlacklistModel = require('../models/blacklist.model');
 require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -127,7 +128,53 @@ const loginController = async(req , res )=>{
     }
 }
 
+
+/**
+ * @route /api/auth/logout
+ * @description this is the logout api where we have implemented token blacklisting 
+ */
+
+const logoutUserController = async(req, res)=>{
+    const token = req.cookies.token;
+    if(token){
+        await tokenBlacklistModel.create({token});  //added to token to blacklist model
+    }
+    res.clearCookie("token");
+
+    res.status(200).json({
+        message :"User logged out successfully!"
+    })
+}
+
+
+/**
+ * @route api/auth/logout
+ * @description get the current logged in user details
+ */
+
+const getMeController = async(req, res) =>{
+   try {
+       const user = await userModel.findById(req.user.id); //this id we will get from the middleware
+
+       res.status(201).json({
+        message : "User details fetched successfully!",
+        user : {
+            id : user._id,
+            username : user.username,
+            email : user.email
+        }
+       })
+   } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message : "Internal server error!", 
+        })
+   }
+}
+
 module.exports = {
     registerUserController,
-    loginController
+    loginController,
+    logoutUserController,
+    getMeController
 }
