@@ -63,7 +63,7 @@ export const useAuth = ()=>{
             }finally{
                 setLoading(false);
             }
-            //this I have done so that if the cookie is deleted it will show the login page
+            //this try catch block I have created such that if the cookie is deleted it will show the login page
         }
         getAndsetUser();
     },[])
