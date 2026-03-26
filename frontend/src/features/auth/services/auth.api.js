@@ -43,14 +43,16 @@ export const logout = async()=>{
         return response.data;
     } catch (error) {
         console.log(error);
+        
     }
 }
 
 export const getMe = async()=>{
    try {
-        const response = await axios.get('/api/auth/get-me');
+        const response = await api.get('/api/auth/get-me');
         return response.data;
    } catch (error) {
     console.log(error)
+    return null;
    }
 }

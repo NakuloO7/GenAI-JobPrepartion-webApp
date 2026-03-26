@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../auth.context";
-import { login, logout, register } from "../services/auth.api";
+import { login, logout, register, getMe } from "../services/auth.api";
+import { useEffect } from "react";
 
 
 
@@ -26,7 +27,7 @@ export const useAuth = ()=>{
         setLoading(true);
         try {
             const data = await register({username, email, password});
-            setUser(user.data);
+            setUser(data.user);
         } catch (error) {
             
         }finally{
@@ -45,5 +46,26 @@ export const useAuth = ()=>{
             setLoading(false);
         }
     }
+
+
+    useEffect(()=>{
+        const getAndsetUser = async()=>{
+            try {
+                const data = await getMe();   //this depends on the cookie as it contains the user data
+                //so until we have the token the user is logged in and we can ask for the user data from backend
+                if(data && data.user){
+                    setUser(data.user);
+                }else{
+                    setUser(null)
+                }
+            } catch (error) {
+                setUser(null);
+            }finally{
+                setLoading(false);
+            }
+            //this I have done so that if the cookie is deleted it will show the login page
+        }
+        getAndsetUser();
+    },[])
     return {user, loading, handleLogin, handleRegister, handleLogout};
 }
