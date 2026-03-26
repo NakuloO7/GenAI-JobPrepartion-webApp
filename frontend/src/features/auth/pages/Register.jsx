@@ -17,6 +17,13 @@ const Register = ()=>{
         //to keep the ui and business logic seperated
         navigate('/')
     }
+    if(loading){
+        return (
+            <main>
+                <h1>Loading...</h1>
+            </main>
+        )
+    }
 
     return  (
         <main>
