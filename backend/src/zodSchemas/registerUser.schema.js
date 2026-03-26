@@ -1,4 +1,4 @@
-const z = require('zod');
+const {z} = require('zod');
 
 const registerUserSchema = z.object({
     username : z.string().min(1, "Username required!"),
