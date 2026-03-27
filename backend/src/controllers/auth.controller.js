@@ -1,4 +1,3 @@
-const { id } = require('zod/locales');
 const userModel = require('../models/user.model')
 const { registerUserSchema, loginUserSchema } = require('../zodSchemas/registerUser.schema');
 const bcrpt = require('bcrypt');
@@ -11,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
  * @route /api/auth/register/
  * @description register a new user, expects username, email and password
  */
-const registerUserController = async(req ,res)=>{
+async function registerUserController(req ,res){
     try {
         //zod validation implemented
         const parsed = registerUserSchema.safeParse(req.body);
@@ -70,7 +69,7 @@ const registerUserController = async(req ,res)=>{
 }
 
 
-const loginController = async(req , res )=>{
+async function loginController(req , res ){
     try {
         const parsed = loginUserSchema.safeParse(req.body);
         if(!parsed.success){
@@ -134,7 +133,7 @@ const loginController = async(req , res )=>{
  * @description this is the logout api where we have implemented token blacklisting 
  */
 
-const logoutUserController = async(req, res)=>{
+async function logoutUserController(req, res){
     const token = req.cookies.token;
     if(token){
         await tokenBlacklistModel.create({token});  //added to token to blacklist model
@@ -152,7 +151,7 @@ const logoutUserController = async(req, res)=>{
  * @description get the current logged in user details
  */
 
-const getMeController = async(req, res) =>{
+async function getMeController(req, res){
    try {
        const user = await userModel.findById(req.user.id); //this id we will get from the middleware
 

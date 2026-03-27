@@ -90,8 +90,7 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
             responseSchema : zodToJsonSchema(interviewReportSchema)
         }
     });
-
-    console.log(JSON.parse(response.text));
+    return JSON.parse(response.text);
 }
 
 module.exports = generateInterviewReport;

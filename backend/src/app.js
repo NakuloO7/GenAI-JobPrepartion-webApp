@@ -12,13 +12,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const authRouter = require('./routes/auth.routes');
+const interviewRouter = require('./routes/interview.routes');
 
 app.get('/', (req , res)=>{
     res.json({
         message : "Hello GenAI!"
     })
 })
-app.use('/api/auth/', authRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/interview', interviewRouter);
 
 
 module.exports = app;
