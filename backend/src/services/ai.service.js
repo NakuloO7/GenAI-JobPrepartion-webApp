@@ -85,12 +85,16 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
     const response = await ai.models.generateContent({
         model : "gemini-2.5-flash",
         contents : prompt,
-        config : {
-            responseMimeType : 'application/json',
-            responseSchema : zodToJsonSchema(interviewReportSchema)
-        }
     });
-    return JSON.parse(response.text);
+    // return JSON.parse(response.text);
+    const raw = response.text;
+
+    const cleaned = raw
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+    return JSON.parse(cleaned);
 }
 
 module.exports = generateInterviewReport;
