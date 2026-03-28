@@ -4,7 +4,9 @@ import { login, logout, register, getMe } from "../services/auth.api";
 import { useEffect } from "react";
 
 
-
+/**
+ * @description form this hook we basically set user values into the context such that we can use them into UI
+ */
 export const useAuth = ()=>{
     const context = useContext(AuthContext);
     const {user, setUser, loading, setLoading} = context;
@@ -16,7 +18,7 @@ export const useAuth = ()=>{
             const data = await login({email, password})
             setUser(data.user);
         } catch (error) {
-            
+            console.log(error);
         }finally{
             setLoading(false);
         }
@@ -29,7 +31,7 @@ export const useAuth = ()=>{
             const data = await register({username, email, password});
             setUser(data.user);
         } catch (error) {
-            
+            console.log(error);
         }finally{
             setLoading(false);
         }
@@ -41,7 +43,7 @@ export const useAuth = ()=>{
             const data = await logout();
             setUser(null);
         } catch (error) {
-            
+            console.log(error);
         }finally{
             setLoading(false);
         }
@@ -60,6 +62,7 @@ export const useAuth = ()=>{
                 }
             } catch (error) {
                 setUser(null);
+                console.log(error);
             }finally{
                 setLoading(false);
             }
