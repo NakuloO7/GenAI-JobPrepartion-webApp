@@ -1,6 +1,32 @@
+import react ,{useState, useRef} from 'react'
+import { useInterview } from "../hooks/useInterview";
 import "../styles/home.scss";
+import {useNavigate} from 'react-router';
 
 const Home = () => {
+  const {loading, generateReport} = useInterview();
+  const [selfDescription, setselfDescription] = useState("");
+  const [jobDescription, setjobDescription] = useState("");
+  const resumeInputRef = useRef();
+  console.log("I want to see the resuem Input ref hook", resumeInputRef);
+  const navigate = useNavigate();
+
+  const handleGenerateReport = async ()=>{
+    const resumeFile = resumeInputRef.current.files[0];
+    const data = await generateReport({jobDescription, selfDescription, resumeFile});
+    console.log("Logging this data to check the Id",data)
+    navigate(`/interview/${data._id}`);
+  }
+
+  if (loading) {
+      return (
+        <main className='loading-screen'>
+           <h1>Loading your interview plan...</h1>
+        </main>
+      )
+  }
+
+
   return (
     <div className="home-page">
 
@@ -45,6 +71,7 @@ const Home = () => {
             </div>
 
             <textarea
+              onChange= {(e)=>setjobDescription(e.target.value)}
               className="panel__textarea"
               placeholder={`Paste the full job description here...
 e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
@@ -113,6 +140,7 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
 
                 <input
                   hidden
+                  ref ={resumeInputRef}
                   type="file"
                   id="resume"
                   name="resume"
@@ -136,6 +164,7 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
               </label>
 
               <textarea
+                onChange= {(e)=>setselfDescription(e.target.value)}
                 id="selfDescription"
                 name="selfDescription"
                 className="panel__textarea panel__textarea--short"
@@ -172,7 +201,7 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
             AI-Powered Strategy Generation • Approx 30s
           </span>
 
-          <button className="generate-btn">
+          <button onClick={handleGenerateReport} className="generate-btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

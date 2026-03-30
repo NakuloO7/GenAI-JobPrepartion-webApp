@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import '../styles/interview.scss'
+import { useInterview } from '../hooks/useInterview';  // from this hook we will get all the data for the logged in user
+
 
 const NAV_ITEMS = [
     { id: 'technical', label: 'Technical Questions', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>) },
@@ -7,49 +9,10 @@ const NAV_ITEMS = [
     { id: 'roadmap', label: 'Road Map', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>) },
 ]
 
-// dummy data (replaces API)
-const report = {
-    matchScore: 85,
-    technicalQuestions: [
-        {
-            question: "Explain useMemo vs useEffect",
-            intention: "Check performance vs side effects",
-            answer: "useMemo memoizes values, useEffect handles side effects."
-        }
-    ],
-    behavioralQuestions: [
-        {
-            question: "Tell me about a challenge",
-            intention: "Evaluate thinking",
-            answer: "Use STAR method"
-        }
-    ],
-    preparationPlan: [
-        {
-            day: 1,
-            focus: "React",
-            tasks: ["Revise hooks"]
-        },
-        {
-            day: 2,
-            focus: "React",
-            tasks: ["Revise hooks"]
-        },
-        {
-            day: 3,
-            focus: "React",
-            tasks: ["Revise hooks"]
-        },
-    ],
-    skillGaps: [
-        { skill: "System Design", severity: "high" }
-    ]
-}
-
 
 // ── Sub-components ──
 const QuestionCard = ({ item, index }) => {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
 
     return (
         <div className='q-card'>
@@ -100,6 +63,8 @@ const RoadMapDay = ({ day }) => (
 // ── Main Component ──
 const Interview = () => {
     const [activeNav, setActiveNav] = useState('technical')
+    const { report }= useInterview();
+    
 
     const scoreColor =
         report.matchScore >= 80 ? 'score--high' :
@@ -151,7 +116,7 @@ const Interview = () => {
                         <section>
                             <div className='content-header'>
                                 <h2>Behavioral Questions</h2>
-                                <span className='content-header__count'>{report.behavioralQuestions.length} questions</span>
+                                <span className='content-header__count'>{report.behaviouralQuestion.length} questions</span>
                             </div>
                             <div className='q-list'>
                                 {report.behavioralQuestions.map((q, i) => (

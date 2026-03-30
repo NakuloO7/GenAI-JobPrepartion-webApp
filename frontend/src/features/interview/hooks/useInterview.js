@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { InterviewContext } from "../interview.context"
-import { generateInterviewReport, getInterviewReportById } from "../services/interview.api"
+import { generateInterviewReport, getAllInterviewReports, getInterviewReportById } from "../services/interview.api"
 
 /**
  * @description form this hook we basically set interview values into the context such that we can use them into UI
@@ -19,14 +19,16 @@ export const useInterview = ()=>{
     */
     const generateReport = async({jobDescription, selfDescription, resumeFile})=>{
         setLoading(true);
+        let response = null;
         try {
-            const response = await generateInterviewReport({jobDescription, selfDescription, resumeFile});
+            response = await generateInterviewReport({jobDescription, selfDescription, resumeFile});
             setReport(response.interviewReport)
         } catch (error) {
             console.log(error);
         }finally{
             setLoading(false);
         }
+        return response.interviewReport; 
     }
 
     /**
@@ -34,14 +36,17 @@ export const useInterview = ()=>{
     */
     const getReportById = async(interviewId)=>{
         setLoading(true);
+        let response = null;
         try {
-            const response = await getInterviewReportById({interviewId});
+            response = await getInterviewReportById({interviewId});
             setReport(response.interviewReport)
         } catch (error) {
             console.log(error);
         }finally{
             setLoading(false);
         }
+
+        return response.interviewReport;
     }
 
     /**
@@ -49,15 +54,16 @@ export const useInterview = ()=>{
     */
     const getAllReports = async()=>{
         setLoading(true);
-
+        let response = null;
         try {
-            const response = await getAllReports();
-            setReports(response.interviewReport)
+            response = await getAllInterviewReports();
+            setReports(response.interviewReports)
         } catch (error) {
             console.log(error);
         }finally{
             setLoading(false);
         }
+        return response.interviewReports
     }
 
     return {loading, report, reports, generateReport, getReportById, getAllReports};
