@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect} from 'react'
 import '../styles/interview.scss'
 import { useInterview } from '../hooks/useInterview';  // from this hook we will get all the data for the logged in user
+import { useParams } from 'react-router';
 
 
 const NAV_ITEMS = [
@@ -63,9 +64,23 @@ const RoadMapDay = ({ day }) => (
 // ── Main Component ──
 const Interview = () => {
     const [activeNav, setActiveNav] = useState('technical')
-    const { report }= useInterview();
+    const { report, getReportById, loading }= useInterview();
+    const {interviewId} = useParams();
     
+    useEffect(()=>{
+        if(interviewId){
+            getReportById(interviewId)
+        }
+    }, [interviewId]);
 
+    
+    if(loading || ! report){
+        return (
+            <main className="loding-screen">
+                <h1>Loading your interview plans...</h1>
+            </main>
+        )
+    }
     const scoreColor =
         report.matchScore >= 80 ? 'score--high' :
         report.matchScore >= 60 ? 'score--mid' : 'score--low'
@@ -119,7 +134,7 @@ const Interview = () => {
                                 <span className='content-header__count'>{report.behaviouralQuestion.length} questions</span>
                             </div>
                             <div className='q-list'>
-                                {report.behavioralQuestions.map((q, i) => (
+                                {report.behaviouralQuestion.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
                             </div>

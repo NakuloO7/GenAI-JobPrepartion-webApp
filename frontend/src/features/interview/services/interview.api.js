@@ -29,7 +29,7 @@ export const generateInterviewReport = async ({jobDescription, selfDescription, 
 ) */
 export const getInterviewReportById = async({interviewId})=>{
     try {
-        const response =  await api.get(`/api/interview/record/:${interviewId}`);
+        const response =  await api.get(`/api/interview/record/${interviewId}`);
         return response.data;
     } catch (error) {
         console.log(error)
