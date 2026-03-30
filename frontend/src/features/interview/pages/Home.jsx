@@ -1,40 +1,40 @@
-import react ,{useState, useRef} from 'react'
+import react, { useState, useRef } from "react";
 import { useInterview } from "../hooks/useInterview";
 import "../styles/home.scss";
-import {useNavigate} from 'react-router';
+import { useNavigate } from "react-router";
 
 const Home = () => {
-  const {loading, generateReport} = useInterview();
+  const { loading, generateReport, reports } = useInterview();
   const [selfDescription, setselfDescription] = useState("");
   const [jobDescription, setjobDescription] = useState("");
   const resumeInputRef = useRef();
-  console.log("I want to see the resuem Input ref hook", resumeInputRef);
   const navigate = useNavigate();
 
-  const handleGenerateReport = async ()=>{
+  const handleGenerateReport = async () => {
     const resumeFile = resumeInputRef.current.files[0];
-    const data = await generateReport({jobDescription, selfDescription, resumeFile});
-    console.log("Logging this data to check the Id",data)
+    const data = await generateReport({
+      jobDescription,
+      selfDescription,
+      resumeFile,
+    });
+    console.log("Logging this data to check the Id", data);
     navigate(`/interview/${data._id}`);
-  }
+  };
 
   if (loading) {
-      return (
-        <main className='loading-screen'>
-           <h1>Loading your interview plan...</h1>
-        </main>
-      )
+    return (
+      <main className="loading-screen">
+        <h1>Loading your interview plan...</h1>
+      </main>
+    );
   }
-
 
   return (
     <div className="home-page">
-
       {/* ================= HEADER ================= */}
       <header className="page-header">
         <h1>
-          Create Your Custom{" "}
-          <span className="highlight">Interview Plan</span>
+          Create Your Custom <span className="highlight">Interview Plan</span>
         </h1>
         <p>
           Let our AI analyze the job requirements and your unique profile to
@@ -44,10 +44,8 @@ const Home = () => {
 
       {/* ================= MAIN CARD ================= */}
       <div className="interview-card">
-
         {/* ---------- BODY ---------- */}
         <div className="interview-card__body">
-
           {/* ===== LEFT PANEL ===== */}
           <div className="panel panel--left">
             <div className="panel__header">
@@ -71,7 +69,7 @@ const Home = () => {
             </div>
 
             <textarea
-              onChange= {(e)=>setjobDescription(e.target.value)}
+              onChange={(e) => setjobDescription(e.target.value)}
               className="panel__textarea"
               placeholder={`Paste the full job description here...
 e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
@@ -86,7 +84,6 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
 
           {/* ===== RIGHT PANEL ===== */}
           <div className="panel panel--right">
-
             {/* HEADER */}
             <div className="panel__header">
               <span className="panel__icon">
@@ -134,13 +131,11 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
                 <p className="dropzone__title">
                   Click to upload or drag & drop
                 </p>
-                <p className="dropzone__subtitle">
-                  PDF or DOCX (Max 5MB)
-                </p>
+                <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
 
                 <input
                   hidden
-                  ref ={resumeInputRef}
+                  ref={resumeInputRef}
                   type="file"
                   id="resume"
                   name="resume"
@@ -156,15 +151,12 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
 
             {/* ---------- SELF DESCRIPTION ---------- */}
             <div className="self-description">
-              <label
-                className="section-label"
-                htmlFor="selfDescription"
-              >
+              <label className="section-label" htmlFor="selfDescription">
                 Quick Self-Description
               </label>
 
               <textarea
-                onChange= {(e)=>setselfDescription(e.target.value)}
+                onChange={(e) => setselfDescription(e.target.value)}
                 id="selfDescription"
                 name="selfDescription"
                 className="panel__textarea panel__textarea--short"
@@ -191,7 +183,6 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
                 <strong>Self Description</strong> is required.
               </p>
             </div>
-
           </div>
         </div>
 
@@ -211,11 +202,36 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
             >
               <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
             </svg>
-
             Generate My Interview Strategy
           </button>
         </div>
       </div>
+
+      {/* Recent Reports List */}
+      {reports.length > 0 && (
+        <section className="recent-reports">
+          <h2>My Recent Interview Plans</h2>
+          <ul className="reports-list">
+            {reports.map((report) => (
+              <li
+                key={report._id}
+                className="report-item"
+                onClick={() => navigate(`/interview/${report._id}`)}
+              >
+                <h3>{report.title || "Untitled Position"}</h3>
+                <p className="report-meta">
+                  Generated on {new Date(report.createdAt).toLocaleDateString()}
+                </p>
+                <p
+                  className={`match-score ${report.matchScore >= 80 ? "score--high" : report.matchScore >= 60 ? "score--mid" : "score--low"}`}
+                >
+                  Match Score: {report.matchScore}%
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* ================= FOOTER ================= */}
       <footer className="page-footer">
@@ -223,7 +239,6 @@ e.g. 'Senior Frontend Engineer requires React, TypeScript, system design...'`}
         <a href="#">Terms of Service</a>
         <a href="#">Help Center</a>
       </footer>
-
     </div>
   );
 };
