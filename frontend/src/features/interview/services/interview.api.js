@@ -35,6 +35,7 @@ export const getInterviewReportById = async({interviewId})=>{
         console.log(error)
     }
 }
+
 /**(
  * @description service to get all the ineterview reports of the logged in user
 ) */
@@ -44,5 +45,20 @@ export const getAllInterviewReports = async()=>{
         return response.data;
     } catch (error) {
         console.log(error)
+    }
+}
+
+/**(
+ * @description service to generate the resume pdf for the interview report
+) */
+
+export const generateResumePdf = async({interviewReportId})=>{
+    try {
+        const response = await api.post(`/api/interview/resume/pdf/${interviewReportId}`, null, {
+            responseType : 'blob'
+        });
+        return response.data;
+    } catch (error) {
+        console.log(error);
     }
 }
